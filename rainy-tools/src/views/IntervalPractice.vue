@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import IntervalDisplay from '../components/IntervalDisplay.vue'
+
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <h1>Interval Practice App Test test</h1>
+    <IntervalDisplay />
   </main>
 </template>

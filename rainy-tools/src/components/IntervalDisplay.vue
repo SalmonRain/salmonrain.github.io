@@ -1,9 +1,11 @@
 <template>
   <div>
-    <h2>Current Interval: {{ interval }}</h2>
+    <h2>Interval Practice</h2>
+    <p>Question: {{ intervalQuestion }}</p>
+    <p>Answer: {{ intervalAnswer }}</p>
+    <button @click="getRandomInterval">Generate Interval</button>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -19,49 +21,50 @@ export default {
         { letter: 'F', solfege: 'Fa', chromaticKey: 8 },
         { letter: 'G', solfege: 'Sol', chromaticKey: 10 }
       ],
-      intervalQuestion : ""
-      intervalAnswer : ""
+      intervalQuestion: "",
+      intervalAnswer: ""
     };
   },
   methods: {
     getRandomInterval() {
-
-      var first_note = this.notes[Math.floor(Math.random() * this.notes.length)]
-      var second_note = this.notes[Math.floor(Math.random() * this.notes.length)]
+      var first_note = this.notes[Math.floor(Math.random() * this.notes.length)];
+      var second_note = this.notes[Math.floor(Math.random() * this.notes.length)];
       var going_up = Math.random() < 0.5;
-      var direction = going_up ? "up" : "down"
+      var direction = going_up ? "up" : "down";
 
       var resultString = `From ${first_note.letter} ${direction} to ${second_note.letter}`;
       var chromaticInterval = going_up ? 
-        (((second_note.chromaticKey - first_note.chromaticKey) % 12 + 12) % 12) : (((first_note.chromaticKey - second_note.chromaticKey) % 12 + 12) % 12)
+        (((second_note.chromaticKey - first_note.chromaticKey) % 12 + 12) % 12) : 
+        (((first_note.chromaticKey - second_note.chromaticKey) % 12 + 12) % 12);
 
-      this.intervalQuestion = resultString
-      this.intervalAnswer = this.determineIntervalQuality
-    }
+      this.intervalQuestion = resultString;
+      this.intervalAnswer = this.determineIntervalQuality(chromaticInterval);
+    },
 
     determineIntervalQuality(chromaticSteps) {
       switch (chromaticSteps) {
-      case 0: return 'Perfect Unison'; // Same note
-      case 1: return 'Minor Second';
-      case 2: return 'Major Second';
-      case 3: return 'Minor Third';
-      case 4: return 'Major Third';
-      case 5: return 'Perfect Fourth';
-      case 6: return 'Tritone | Diminished Fifth | Augmented Fourth';
-      case 7: return 'Perfect Fifth';
-      case 8: return 'Minor Sixth'; // Ascending
-      case 9: return 'Major Sixth';  // Ascending
-      case 10: return 'Minor Seventh'; // Ascending
-      case 11: return 'Major Seventh'; // Ascending
-      case 12: return 'Perfect Octave'; // Ascending
-      default: return 'Unknown Interval';
+        case 0: return 'Perfect Unison'; 
+        case 1: return 'Minor Second';
+        case 2: return 'Major Second';
+        case 3: return 'Minor Third';
+        case 4: return 'Major Third';
+        case 5: return 'Perfect Fourth';
+        case 6: return 'Tritone | Diminished Fifth | Augmented Fourth';
+        case 7: return 'Perfect Fifth';
+        case 8: return 'Minor Sixth'; 
+        case 9: return 'Major Sixth'; 
+        case 10: return 'Minor Seventh';
+        case 11: return 'Major Seventh'; 
+        case 12: return 'Perfect Octave'; 
+        default: return 'Unknown Interval';
+      }
     }
-
+  },
+  created() {
+    this.getRandomInterval(); // Optionally run when the component is created
   }
 };
-}
 </script>
-
 
 <style scoped>
 .item {
