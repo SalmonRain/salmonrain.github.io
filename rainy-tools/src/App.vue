@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
   <header>
-
+    <h1>rainy-tools</h1>
     <div class="wrapper">
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/interval-practice">Interval Practice</RouterLink>
       </nav>
     </div>
@@ -20,9 +18,15 @@ import HelloWorld from './components/HelloWorld.vue'
 </template>
 
 <style scoped>
+
 header {
-  line-height: 1.5;
-  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers items horizontally */
+  justify-content: center; /* Centers items vertically */
+  text-align: center;
+  width: 100%; /* Ensure it spans the full width */
+  padding: 1rem 0;
 }
 
 .logo {
@@ -56,6 +60,11 @@ nav a:first-of-type {
 }
 
 @media (min-width: 1024px) {
+  
+  h1{
+    font-size: small;
+  }
+
   header {
     display: flex;
     place-items: center;
