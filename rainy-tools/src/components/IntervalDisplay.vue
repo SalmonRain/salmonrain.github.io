@@ -16,8 +16,6 @@
 
     <button @click="toggleAnswer">{{ answerVisible ? 'Next Interval' : 'Reveal Answer' }}</button>
     
-
-
   </div>
 </template>
 
@@ -41,7 +39,7 @@ button.active {
 }
 
 .answer-container {
-  min-height: 1.5rem; /* Enough space for the answer text */
+  min-height: 1.9rem; /* Enough space for the answer text */
 }
 
 .mode-toggle {
