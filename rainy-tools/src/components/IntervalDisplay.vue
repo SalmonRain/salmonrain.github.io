@@ -7,12 +7,15 @@
     </button>
 
     <p>{{ intervalQuestion }}</p>
-    
 
+
+    <!-- Space reserved for answer -->
+    <div class="answer-container">
+      <p v-if="answerVisible">{{ intervalAnswer }}</p>
+    </div>
 
     <button @click="toggleAnswer">{{ answerVisible ? 'Next Interval' : 'Reveal Answer' }}</button>
     
-    <p v-if="answerVisible">{{ intervalAnswer }}</p>
 
 
   </div>
@@ -35,6 +38,10 @@ button {
 button.active {
   background-color: #007BFF;
   color: white;
+}
+
+.answer-container {
+  min-height: 1.5rem; /* Enough space for the answer text */
 }
 
 .mode-toggle {
@@ -111,8 +118,8 @@ export default {
 
       // Calculate diatonic interval
       this.noteDistance = this.ascending
-        ? (this.notes.indexOf(this.firstNote) - this.notes.indexOf(this.secondNote) %7 +7) %7
-        : (this.notes.indexOf(this.secondNote) - this.notes.indexOf(this.firstNote) %7 +7) %7
+        ? (this.notes.indexOf(this.firstNote) - this.notes.indexOf(this.secondNote) %8 +8) %8
+        : (this.notes.indexOf(this.secondNote) - this.notes.indexOf(this.firstNote) %8 +8) %8
 
 
       // Set the interval answer
@@ -129,7 +136,9 @@ export default {
 
     },
     determineIntervalQuality(chromaticSteps) {
+
       switch (chromaticSteps) {
+        
         case 0: return 'Perfect Unison / Perfect Octave';
         case 1: return 'Minor Second';
         case 2: return 'Major Second';
@@ -137,11 +146,19 @@ export default {
         case 4: return 'Major Third';
         case 5: return 'Perfect Fourth';
         case 6:
+          console.log("6 Chromatic occured " + this.firstNote.letter +" - " +this.secondNote.letter + " - Diatonic: " + this.noteDistance);
+
           if (this.noteDistance === 4) {
+            console.log("4th");
+
             return 'Augmented Fourth';  // 4 letter names apart
           } else if (this.noteDistance === 5) {
+            console.log("5th");
+
             return 'Diminished Fifth';  // 5 letter names apart
           } else {
+            console.log("tri");
+
             return 'Tritone';  // Generic tritone fallback
           }        
         case 7: return 'Perfect Fifth';
