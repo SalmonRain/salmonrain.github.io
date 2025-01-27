@@ -1,0 +1,1 @@
+import{_ as t,c as o,a as s,o as a}from"./index-CxD49Dtf.js";const n={},c={class:"about"};function r(i,e){return a(),o("div",c,e[0]||(e[0]=[s("h1",null,"This is an about page, testing for change",-1)]))}const f=t(n,[["render",r]]);export{f as default};
