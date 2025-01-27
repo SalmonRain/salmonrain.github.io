@@ -1,25 +1,13 @@
 <template>
   <div class="interval-display-content">
     <h2>What's the interval?</h2>
-    <img id="notewheel" :src="NoteWheelSimple" alt="A wheel showing the notes C, D, E, F, G, A, B and C in relation to one another." />
+    <img id="notewheel" :style="{ display: wheelIsVisible ? 'inline' : 'none' }" :src="NoteWheelSimple" alt="A wheel showing the notes C, D, E, F, G, A, B and C in relation to one another." />
 
     <!-- Settings Modal (hidden by default) -->
     <div v-if="settingsVisible" class="settings-modal-overlay" @click.self="toggleSettings">
       <div class="settings-modal">
         <button class="close-button" @click="toggleSettings">✖️</button>
         <div class="settings-container">
-          <!-- Images Option -->
-<!--           <div class="setting-item">
-            <div class="options-row">
-
-              <p :class="{ selected: selectedImage === 'none' }">No Images</p>
-              <p :class="{ selected: selectedImage === 'diatonic' }">Diatonic Notewheel</p>
-              <p :class="{ selected: selectedImage === 'chromatic' }">Chromatic Notewheel</p>
-            </div>
-            <div class="slider">
-              <input type="range" min="0" max="2" v-model="imageOption" @input="updateImage">
-            </div>
-          </div> -->
 
           <!-- Language Option -->
 <!--           <div class="setting-item">
@@ -38,8 +26,8 @@
           <div class="setting-item">
             <div class="options-row">
 
-              <p :class="{ selected: includeOctaves }">Include Octaves</p>
-              <p :class="{ selected: !includeOctaves }">Skip Octaves</p>
+              <p :class="{ selected: !skipOctaves }">Include Octaves</p>
+              <p :class="{ selected: skipOctaves }">Skip Octaves</p>
             </div>
 
             <div class="slider">
@@ -54,11 +42,24 @@
               <p :class="{ selected: !useSolfege }">Letters</p>
               <p :class="{ selected: useSolfege }">Solfege</p>
             </div>
-            
             <div class="slider">
               <input type="range" min="0" max="1" v-model="notationOption" @input="toggleNotation">
             </div>
           </div>
+
+                    
+          <!-- Images Option -->
+          <div class="setting-item">
+            <div class="options-row">
+              <p :class="{ selected: imageSelected === 'none' }">No Image</p>
+              <p :class="{ selected: imageSelected === 'diatonic' }">Diatonic Notewheel</p>
+            </div>
+            <div class="slider">
+              <input type="range" min="0" max="1" v-model="imageOption" @input="updateImage">
+            </div>
+          </div>
+
+
         </div>
       </div>
     </div>
@@ -134,10 +135,22 @@ p {
   position: relative;
   padding: 1rem;
 }
-
 #notewheel {
-  display: none;
+  position: absolute;
+  transform: scale(0.5) ;
+  top: -0.5rem;
+  left: -14rem;
+  z-index: -1;
 }
+
+@media (max-width: 768px) {
+  #notewheel {
+    transform: scale(0.4); /* Smaller scale for smaller screens */
+    top: calc(50% - 6rem); /* Adjust positioning */
+    left: calc(50% - 21rem);
+  }
+}
+
 
 /* Modal Overlay */
 .settings-modal-overlay {
@@ -270,19 +283,19 @@ export default {
       answerVisible: false,
       ascending: true,
       noteDistance: true,
-      useLetters: true,   // Default to Letters checked
       NoteWheelSimple: NoteWheelSimple,
       // Settings
       settingsVisible: false,
       imageOption: 0, // 0: No images, 1: Diatonic, 2: Chromatic
-      selectedImage: 'none',
+      imageSelected: 'none',
       languageOption: 0, // 0: English, 1: Nederlands
       selectedLanguage: 'en',
       octaveOption: 0, // 0: Skip Octaves, 1: Show Octaves
-      includeOctaves: true,
+      skipOctaves: false,
       notationOption: 0, // 0: Letters, 1: Solfege
       useSolfege: false,
       settingsVisible: false,
+      wheelIsVisible: false
 
 
     };
@@ -293,7 +306,7 @@ export default {
       this.firstNote = this.notes[Math.floor(Math.random() * this.notes.length)];
       do {
         this.secondNote = this.notes[Math.floor(Math.random() * this.notes.length)];
-      } while (!this.includeOctaves && this.secondNote === this.firstNote);
+      } while (this.skipOctaves && this.secondNote === this.firstNote);
       this.ascending = Math.random() < 0.5;
 
       // Generate interval question string
@@ -321,7 +334,7 @@ export default {
     },
     setQuestion(){
       const direction = this.ascending ? 'up' : 'down';
-      this.intervalQuestion =  this.useLetters ?
+      this.intervalQuestion =  !this.useSolfege ?
         `From ${this.firstNote.letter} ${direction} to ${this.secondNote.letter}` :
         `From ${this.firstNote.solfege} ${direction} to ${this.secondNote.solfege}`;
 
@@ -329,21 +342,19 @@ export default {
     // Settings Management
     updateImage() {
       const options = ['none', 'diatonic', 'chromatic'];
-      this.selectedImage = options[this.imageOption];
+      var option = options[this.imageOption]
+      this.imageSelected = option;
     },
     updateLanguage() {
       const languages = ['en', 'nl'];
       this.selectedLanguage = languages[this.languageOption];
     },
     toggleOctaves() {
-      this.includeOctaves = this.octaveOption == 0;
+      this.skipOctaves = this.octaveOption == 1;
     },
     toggleNotation() {
       this.useSolfege = this.notationOption == 1;
-      this.useLetters = !this.useLetters;
-
       this.setQuestion()
-
     },
     determineIntervalQuality(chromaticSteps) {
 
@@ -387,7 +398,6 @@ export default {
       }
     },    
     toggleMode() {
-      this.useLetters = !this.useLetters;
       this.setQuestion()
     },
     toggleSettings() {
@@ -396,7 +406,34 @@ export default {
     
   },
   mounted() {
+    if (localStorage.useSolfege !== undefined)
+      {
+        this.useSolfege = localStorage.useSolfege === "true"
+        this.notationOption = this.useSolfege ? 1 : 0;
+      };
+    if (localStorage.skipOctaves !== undefined)
+      {
+        this.skipOctaves = localStorage.skipOctaves === "true"
+        this.octaveOption = this.skipOctaves ? 1 : 0;
+      };
+    if (localStorage.imageSelected !== undefined)
+      {
+        this.imageSelected = localStorage.imageSelected
+        this.imageOption = this.imageSelected == "none" ? 0 : 1;
+      };
     this.generateInterval(); // Generate the first interval on mount
+  },
+  watch: {
+    useSolfege() {
+      localStorage.useSolfege = this.useSolfege;
+    },
+    skipOctaves() {
+      localStorage.skipOctaves = this.skipOctaves;
+    },
+    imageSelected() {
+      localStorage.imageSelected = this.imageSelected;
+      this.imageSelected == "none" ? this.wheelIsVisible = false : this.wheelIsVisible = true
+    }
   }
 };
 </script>
