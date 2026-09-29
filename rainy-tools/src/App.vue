@@ -10,10 +10,10 @@ import { RouterLink, RouterView } from 'vue-router'
       <nav>
         <div class="nav-group">
           <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/interval-practice">Interval Practice</RouterLink>
         </div>
         <div class="nav-group">
           <span class="nav-label">Intervallen</span>
+          <RouterLink to="/interval-practice">Interval Recognition</RouterLink>
           <RouterLink to="/intervallen/intervalsprongen">Intervalsprongen</RouterLink>
           <RouterLink to="/intervallen/intervalstappen">Intervalstappen</RouterLink>
           <RouterLink to="/intervallen/notenstappen">Notenstappen</RouterLink>
@@ -28,7 +28,9 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </header>
 
-  <RouterView />
+  <!-- :key forceert een verse component per route, zodat de quizzen
+       (die dezelfde QuizView delen) ook onderling navigeerbaar zijn. -->
+  <RouterView :key="$route.path" />
 </template>
 
 <style scoped>
