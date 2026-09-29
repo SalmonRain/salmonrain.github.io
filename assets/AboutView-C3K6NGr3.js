@@ -1,0 +1,1 @@
+import{_ as t,a as o,b as s,o as a}from"./index-CjtNLVHT.js";const n={},r={class:"about"};function c(i,e){return a(),o("div",r,e[0]||(e[0]=[s("h1",null,"This is an about page, testing for change",-1)]))}const f=t(n,[["render",c]]);export{f as default};
