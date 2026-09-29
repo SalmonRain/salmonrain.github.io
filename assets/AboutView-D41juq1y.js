@@ -1,0 +1,1 @@
+import{_ as t,e as s,f as o,b as a}from"./index-CFzGzpPc.js";const n={},r={class:"about"};function c(i,e){return a(),s("div",r,e[0]||(e[0]=[o("h1",null,"This is an about page, testing for change",-1)]))}const f=t(n,[["render",c]]);export{f as default};
