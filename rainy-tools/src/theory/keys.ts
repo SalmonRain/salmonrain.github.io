@@ -33,9 +33,9 @@ export const SIGNATURES: Signature[] = [
   { count: 2, type: 'kruisen', groot: n(1), klein: n(6) },
   { count: 3, type: 'kruisen', groot: n(5), klein: n(3, 1) },
   { count: 4, type: 'kruisen', groot: n(2), klein: n(0, 1) },
-  { count: 5, type: 'kruisen', groot: n(6), klein: n(5, 1) },
+  { count: 5, type: 'kruisen', groot: n(6), klein: n(4, 1) },
   { count: 6, type: 'kruisen', groot: n(3, 1), klein: n(1, 1) },
-  { count: 7, type: 'kruisen', groot: n(0, 1), klein: n(4, 1) },
+  { count: 7, type: 'kruisen', groot: n(0, 1), klein: n(5, 1) },
   { count: 1, type: 'mollen', groot: n(3), klein: n(1) },
   { count: 2, type: 'mollen', groot: n(6, -1), klein: n(4) },
   { count: 3, type: 'mollen', groot: n(2, -1), klein: n(0) },
@@ -88,9 +88,15 @@ export function voortekensLetters(count: number, type: VoortekenType): string[] 
 /** "6 kruisen: fa do sol re la mi", "1 mol: si", "0 voortekens" */
 export function formatVoortekens(count: number, type: VoortekenType): string {
   if (count <= 0 || type === 'geen') return '0 voortekens'
-  const noun = type === 'kruisen' ? 'kruis' : 'mol'
-  const plural = count === 1 ? noun : noun + 'en'
-  return `${count} ${plural}: ${voortekensLetters(count, type).join(' ')}`
+  const noun =
+    count === 1
+      ? type === 'kruisen'
+        ? 'kruis'
+        : 'mol'
+      : type === 'kruisen'
+        ? 'kruisen'
+        : 'mollen'
+  return `${count} ${noun}: ${voortekensLetters(count, type).join(' ')}`
 }
 
 /** Letter -> voorteken uit het sleutelteken. */
