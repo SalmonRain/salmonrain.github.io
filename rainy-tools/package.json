@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test": "vitest run",
     "deploy": "npm run build && gh-pages -d dist",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
@@ -31,6 +32,7 @@
     "prettier": "^3.3.3",
     "typescript": "~5.5.4",
     "vite": "^5.4.8",
+    "vitest": "^2.1.9",
     "vue-tsc": "^2.1.6"
   }
 }
