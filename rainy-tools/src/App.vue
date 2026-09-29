@@ -8,8 +8,22 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="wrapper">
 
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/interval-practice">Interval Practice</RouterLink>
+        <div class="nav-group">
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/interval-practice">Interval Practice</RouterLink>
+        </div>
+        <div class="nav-group">
+          <span class="nav-label">Intervallen</span>
+          <RouterLink to="/intervallen/intervalsprongen">Intervalsprongen</RouterLink>
+          <RouterLink to="/intervallen/intervalstappen">Intervalstappen</RouterLink>
+          <RouterLink to="/intervallen/notenstappen">Notenstappen</RouterLink>
+        </div>
+        <div class="nav-group">
+          <span class="nav-label">Sleutels</span>
+          <RouterLink to="/sleutels/voortekens">Voortekens</RouterLink>
+          <RouterLink to="/sleutels/grote-kleine-sleutel">Grote/kleine sleutel</RouterLink>
+          <RouterLink to="/sleutels/hoofddrieklanken">Hoofddrieklanken</RouterLink>
+        </div>
       </nav>
     </div>
   </header>
@@ -57,6 +71,21 @@ nav a {
 
 nav a:first-of-type {
   border: 0;
+}
+
+.nav-group {
+  display: block;
+}
+
+.nav-label {
+  display: inline-block;
+  padding: 0 1rem;
+  border-left: 1px solid var(--color-border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.65;
+  cursor: default;
 }
 
 @media (min-width: 1024px) {
