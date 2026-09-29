@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useQuizSession } from '@/composables/useQuizSession'
 import { EMPTY_POOL_MESSAGE } from '@/theory/constants'
 import { INTERVALS } from '@/theory/intervals'
@@ -53,6 +53,45 @@ const showIntervals = computed(() =>
 const showMaxVoortekens = computed(() =>
   ['voortekens', 'grote-kleine-sleutel', 'hoofddrieklanken'].includes(props.quizId),
 )
+
+/** Velden in het instellingenpaneel mogen hun eigen toetsen houden. */
+function isFormTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+  return ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)
+}
+
+/** Knoppen en links reageren al zelf op Spatie/Enter (klik bij focus). */
+function isButtonOrLink(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+  return ['BUTTON', 'A'].includes(target.tagName)
+}
+
+/**
+ * Toetsenbordbediening: Spatie/Enter toont het antwoord of bevestigt "Juist",
+ * Y is altijd "Juist" en N is altijd "Fout".
+ */
+function handleKeydown(event: KeyboardEvent): void {
+  if (event.repeat || event.ctrlKey || event.metaKey || event.altKey) return
+  if (isFormTarget(event.target)) return
+
+  const key = event.key.toLowerCase()
+  const isAdvance = event.key === ' ' || event.key === 'Enter'
+  if (isAdvance && isButtonOrLink(event.target)) return
+
+  if (isAdvance) {
+    event.preventDefault() // voorkomt dat de pagina scrollt
+    if (!currentQuestion.value) return
+    if (!answerVisible.value) revealAnswer()
+    else recordResult('juist')
+    return
+  }
+  if (!currentQuestion.value || !answerVisible.value) return
+  if (key === 'y') recordResult('juist')
+  else if (key === 'n') recordResult('fout')
+}
+
+onMounted(() => window.addEventListener('keydown', handleKeydown))
+onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown))
 </script>
 
 <template>
@@ -207,6 +246,9 @@ const showMaxVoortekens = computed(() =>
           <button type="button" class="fout" @click="recordResult('fout')">Fout</button>
         </template>
       </div>
+      <p class="keyboard-hint">
+        Spatie/Enter: antwoord tonen of juist · Y: juist · N: fout
+      </p>
     </template>
   </main>
 </template>
@@ -344,5 +386,11 @@ button.secondary {
   margin-top: 2rem;
   color: #b54a4a;
   font-weight: 600;
+}
+
+.keyboard-hint {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+  opacity: 0.55;
 }
 </style>
